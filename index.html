@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vidushi — Scroll Story</title>
+    <!-- Inter font for clean, modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Full-screen canvas for the 3D scene (added in a later step) -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!--
+      The page uses four full-height sections inside <main>.
+      Each section scrolls naturally and fills the viewport.
+    -->
+    <main class="content">
+      <!-- Section 1 — Hero: brief personal introduction -->
+      <section class="panel">
+        <div class="panel-content">
+          <h1 class="display-name">Hi, I'm Vidushi</h1>
+          <p class="lead">
+            Computer Science student passionate about AI/ML, NLP,
+            creative frontend development, and building hands-on projects.
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 2 — Learning: topics currently studying -->
+      <section class="panel">
+        <div class="panel-content">
+          <h2 class="panel-title">What I'm Learning</h2>
+          <ul class="skill-list">
+            <li>AI / Machine Learning</li>
+            <li>Natural Language Processing</li>
+            <li>Deep Learning</li>
+            <li>Data Structures &amp; Algorithms</li>
+            <li>Creative Frontend &amp; 3D Web Experiences</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Section 3 — Projects: things built so far -->
+      <section class="panel">
+        <div class="panel-content">
+          <h2 class="panel-title">Things I've Made</h2>
+          <ul class="project-list">
+            <li>Spiral Galaxy — interactive Three.js visualization</li>
+            <li>AI / ML and NLP projects</li>
+            <li>Academic software projects</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Section 4 — Contact: simple closing with link placeholders -->
+      <section class="panel">
+        <div class="panel-content">
+          <h2 class="panel-title">Say Hello</h2>
+          <p class="lead">
+            I'm always excited to connect about projects, ideas,
+            or creative coding.
+          </p>
+          <!-- target="_blank" opens links in a new tab.
+               rel="noopener noreferrer" prevents the new page
+               from accessing this page's window (security best
+               practice when linking to external sites). -->
+          <div class="links">
+            <a href="https://github.com/vidushitomari545-sh" class="link" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/in/vidushi-tomar-59b1a1322/" class="link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

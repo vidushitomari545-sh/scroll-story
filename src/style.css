@@ -1,0 +1,201 @@
+/* ============================================================
+   Scroll Story — Page Layout & Typography
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   How the four sections are structured:
+   The page has a <canvas> for the 3D scene (added later) and
+   a <main class="content"> wrapper holding four
+   <section class="panel"> elements — one for each story beat:
+     1. Hero       — "Hi, I'm Vidushi"
+     2. Learning   — "What I'm Learning"
+     3. Projects   — "Things I've Made"
+     4. Contact    — "Say Hello"
+   ---------------------------------------------------------- */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* Pure CSS smooth scrolling for in-page navigation */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  background-color: #fdfbf9;
+  color: #2d2d2d;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ----------------------------------------------------------
+   Canvas (3D scene placeholder):
+   Fixed behind all content. z-index: 0 keeps it at the back.
+   Three.js will render onto this in a later step.
+   ---------------------------------------------------------- */
+
+#webgl-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+/* ----------------------------------------------------------
+   Main content and panels:
+   .content sits above the canvas (z-index: 1) so the text
+   is always visible. Each .panel is 100vh tall and uses
+   flexbox to center its content both vertically and
+   horizontally. Panels alternate background shades for
+   subtle visual rhythm while staying cohesive.
+   ---------------------------------------------------------- */
+
+.content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+/* min-height (not height) allows content to overflow
+   naturally if it ever exceeds the viewport on very short
+   screens. */
+.panel {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+}
+
+.panel:nth-child(odd) {
+  background-color: #fdfbf9;
+}
+
+.panel:nth-child(even) {
+  background-color: #f8f6f3;
+}
+
+/* Each panel's content is centered with a max-width so
+   long lines don't become hard to read on wide screens. */
+.panel-content {
+  max-width: 42rem;
+  width: 100%;
+  text-align: center;
+}
+
+/* ============================================================
+   Typography
+   ============================================================ */
+
+.display-name {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  color: #2d2d2d;
+  margin-bottom: 1rem;
+}
+
+.panel-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  color: #2d2d2d;
+  margin-bottom: 2rem;
+}
+
+.lead {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: 400;
+  color: #5a5a5a;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   Lists (skills & projects)
+   ============================================================ */
+
+.skill-list,
+.project-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.skill-list li,
+.project-list li {
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  font-weight: 400;
+  color: #4a4a4a;
+  line-height: 1.5;
+  padding: 0.75rem 1.5rem;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-left: 3px solid #d4a373;
+}
+
+/* ============================================================
+   Contact links
+   ============================================================ */
+
+.links {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.link {
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-weight: 500;
+  color: #2d2d2d;
+  text-decoration: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid #d4a373;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.link:hover {
+  background-color: #d4a373;
+  color: #ffffff;
+}
+
+/* ============================================================
+   Responsive Design (explained for beginners)
+   -----------------------------------------------------------
+   1. clamp() — font sizes use clamp(min, fluid, max)
+      so text scales smoothly between a minimum and
+      maximum as the viewport resizes. No abrupt jumps.
+
+   2. max-width on .panel-content — keeps every line of text
+      under ~65 characters, the ideal reading length on
+      any screen size.
+
+   3. Media query (max-width: 640px) — on phones:
+      • Panel padding goes from 4rem/2rem to 6rem/1.5rem
+        (more side space so text never touches edges).
+      • The contact links stack vertically instead of
+        sitting side-by-side, giving them room to breathe.
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .panel {
+    padding: 6rem 1.5rem;
+  }
+
+  .display-name {
+    font-size: 2.5rem;
+  }
+
+  .links {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

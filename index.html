@@ -4,14 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vidushi — Scroll Story</title>
-    <!-- Inter font for clean, modern typography -->
+    <!-- Inter + DM Serif Display fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
     <!-- Full-screen canvas for the 3D scene (added in a later step) -->
     <canvas id="webgl-canvas"></canvas>
+
+    <!--
+      Decorative floating elements — purely visual, behind content.
+      Uses CSS only (no JS, no images). aria-hidden hides them
+      from screen readers since they carry no information.
+      Includes large blurred orbs and tiny glowing dots.
+    -->
+    <div class="decorations" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="floating-dot dot-1"></div>
+      <div class="floating-dot dot-2"></div>
+      <div class="floating-dot dot-3"></div>
+      <div class="floating-dot dot-4"></div>
+      <div class="floating-dot dot-5"></div>
+    </div>
 
     <!--
       The page uses four full-height sections inside <main>.
@@ -19,13 +35,47 @@
     -->
     <main class="content">
       <!-- Section 1 — Hero: brief personal introduction -->
-      <section class="panel">
+      <section class="panel hero">
+        <!-- Decorative stickers (image-based JPEGs, behind text) -->
+        <div class="hero-stickers">
+          <img class="hero-sticker hs-1" src="/personality/WhatsApp Image 2026-10-04 at 2.35.39 PM.jpeg" alt="" />
+          <img class="hero-sticker hs-2" src="/personality/WhatsApp Image 2026-10-04 at 2.35.40 PM (1).jpeg" alt="" />
+          <img class="hero-sticker hs-3" src="/personality/WhatsApp Image 2026-10-04 at 2.35.40 PM (2).jpeg" alt="" />
+          <img class="hero-sticker hs-4" src="/personality/WhatsApp Image 2026-10-04 at 2.35.40 PM.jpeg" alt="" />
+          <img class="hero-sticker hs-5" src="/personality/WhatsApp Image 2026-10-04 at 2.35.41 PM (1).jpeg" alt="" />
+          <img class="hero-sticker hs-6" src="/personality/WhatsApp Image 2026-10-04 at 2.35.41 PM.jpeg" alt="" />
+        </div>
+
+        <!-- Subtle sparkle / glitter effect -->
+        <div class="hero-sparkles" aria-hidden="true">
+          <span class="sparkle sp-1">✦</span>
+          <span class="sparkle sp-2">✦</span>
+          <span class="sparkle sp-3">✦</span>
+          <span class="sparkle sp-4">✦</span>
+          <span class="sparkle sp-5">✦</span>
+          <span class="sparkle sp-6">✦</span>
+          <span class="sparkle sp-7">★</span>
+          <span class="sparkle sp-8">✨</span>
+        </div>
+
         <div class="panel-content">
-          <h1 class="display-name">Hi, I'm Vidushi</h1>
-          <p class="lead">
-            Computer Science student passionate about AI/ML, NLP,
-            creative frontend development, and building hands-on projects.
-          </p>
+          <!-- Hero text sits above the stickers -->
+          <div class="hero-text">
+            <h1 class="display-name">Hi, I'm Vidushi</h1>
+            <p class="lead">
+              Computer Science student passionate about AI/ML, NLP,
+              creative frontend development, and building hands-ons projects.
+            </p>
+            <button type="button" class="hero-cta" aria-label="Discover more about Vidushi">
+              Click Me ✦
+            </button>
+            <div class="hero-popup" role="dialog" aria-hidden="true">
+              <button type="button" class="hero-popup-close" aria-label="Close">×</button>
+              <p class="hero-popup-text">
+                You're one click closer to discovering who Vidushi is and what she does.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -46,30 +96,200 @@
       <!-- Section 3 — Projects: things built so far -->
       <section class="panel">
         <div class="panel-content">
-          <h2 class="panel-title">Things I've Made</h2>
+          <h2 class="panel-title">Things I've Built</h2>
           <ul class="project-list">
-            <li>Spiral Galaxy — interactive Three.js visualization</li>
-            <li>AI / ML and NLP projects</li>
-            <li>Academic software projects</li>
+            <!-- Project 1: Spiral Galaxy (completed, with links) -->
+            <li class="project-card">
+              <div class="project-header">
+                <h3 class="project-title">Spiral Galaxy</h3>
+                <span class="project-status status-completed">Completed</span>
+              </div>
+              <p class="project-description">Interactive procedural 3D galaxy built with Three.js.</p>
+              <div class="project-links">
+                <a href="https://spiral-galaxy-phi.vercel.app" class="link" target="_blank" rel="noopener noreferrer">Live Demo</a>
+                <a href="https://github.com/vidushitomari545-sh/spiral-galaxy" class="link" target="_blank" rel="noopener noreferrer">GitHub</a>
+              </div>
+            </li>
+            <!-- Project 2: ROAD-SHIELD (class/team project, no links) -->
+            <li class="project-card">
+              <div class="project-header">
+                <h3 class="project-title">ROAD-SHIELD</h3>
+                <span class="project-status status-team">Class / Team Project</span>
+              </div>
+              <p class="project-description">AI-powered road distress detection and urban safety monitoring using a public-transport sensing approach.</p>
+            </li>
+            <!-- Project 3: MindScape (team project, completed, achievement) -->
+            <li class="project-card">
+              <div class="project-header">
+                <h3 class="project-title">MindScape</h3>
+                <span class="project-status status-completed">Completed</span>
+              </div>
+              <p class="project-description">An AI-powered mental well-being platform designed around peer support, health-vitals support, personalized counsellor session booking, counsellor management, and an AI chatbot.</p>
+              <span class="project-achievement">Team Nirvana • Project Showcase 2.0 • 3rd Position</span>
+            </li>
+            <!-- Project 4: NLP Document Project (in progress, no links) -->
+            <li class="project-card">
+              <div class="project-header">
+                <h3 class="project-title">NLP Document Project</h3>
+                <span class="project-status status-in-progress">In Progress</span>
+              </div>
+              <p class="project-description">Document classification, organization and chatbot-based retrieval.</p>
+            </li>
           </ul>
         </div>
       </section>
 
-      <!-- Section 4 — Contact: simple closing with link placeholders -->
-      <section class="panel">
+      <!-- Section 3b — Non-Technical Vidushi (Personality Constellation) -->
+      <section class="panel nt-vidushi">
         <div class="panel-content">
-          <h2 class="panel-title">Say Hello</h2>
+          <h2 class="panel-title">Non-Technical Vidushi</h2>
+          <p class="lead">There's more to me than code.</p>
+
+          <div class="constellation">
+            <!-- SVG curved arrows connecting center to outer stickers (behind stickers) -->
+            <svg class="constellation-arrows" viewBox="0 0 500 500" aria-hidden="true">
+              <defs>
+                <marker id="arrowhead-nt" markerWidth="10" markerHeight="8"
+                        refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0 0 L8 4 L0 8 Z" fill="#b76e79" />
+                </marker>
+              </defs>
+              <!-- Arrow to Books (top center) -->
+              <path class="constellation-arrow"
+                    d="M 250 160 C 290 110 300 90 250 70"
+                    marker-end="url(#arrowhead-nt)" />
+              <!-- Arrow to Getting Ready (top-left) -->
+              <path class="constellation-arrow"
+                    d="M 173 173 C 140 140 125 120 120 100"
+                    marker-end="url(#arrowhead-nt)" />
+              <!-- Arrow to Shopping (top-right) -->
+              <path class="constellation-arrow"
+                    d="M 327 173 C 360 140 375 120 380 100"
+                    marker-end="url(#arrowhead-nt)" />
+              <!-- Arrow to Skincare (bottom-left) -->
+              <path class="constellation-arrow"
+                    d="M 173 327 C 140 360 125 380 120 400"
+                    marker-end="url(#arrowhead-nt)" />
+              <!-- Arrow to Laptop (bottom-right) -->
+              <path class="constellation-arrow"
+                    d="M 327 327 C 360 360 375 380 380 400"
+                    marker-end="url(#arrowhead-nt)" />
+              <!-- Arrow to Lip Balm (bottom center) -->
+              <path class="constellation-arrow"
+                    d="M 250 340 C 210 385 190 410 250 430"
+                    marker-end="url(#arrowhead-nt)" />
+            </svg>
+
+            <!-- Subtle glitter sparkles around the center -->
+            <div class="center-sparkles" aria-hidden="true">
+              <span class="center-sparkle">✦</span>
+              <span class="center-sparkle">✦</span>
+              <span class="center-sparkle">★</span>
+              <span class="center-sparkle">✨</span>
+              <span class="center-sparkle">✦</span>
+              <span class="center-sparkle">✦</span>
+            </div>
+
+            <!-- Central Vidushi sticker — the largest visual element -->
+            <div class="constellation-center">
+              <img src="/personality/WhatsApp Sticker 2026-10-05 at 11.15.14 AM.webp"
+                   alt="Vidushi holding a phone"
+                   class="center-sticker"
+                   width="511" height="511" />
+            </div>
+
+            <!-- Outer stickers arranged in a loose circle around center -->
+
+            <!-- Top center: Books / reading -->
+            <div class="outer-sticker outer-books">
+              <img src="/personality/WhatsApp Image 2026-10-04 at 2.35.51 PM (1).jpeg"
+                   alt="Colleen Hoover book stack sticker"
+                   class="outer-img"
+                   loading="lazy" />
+              <span class="outer-label">Book Girl 📚</span>
+            </div>
+
+            <!-- Top-left: Getting ready / self-care -->
+            <div class="outer-sticker outer-getting-ready">
+              <img src="/personality/vidushi-2.jpg"
+                   alt="Vidushi getting ready with makeup, bedroom selfie"
+                   class="outer-img"
+                   loading="lazy" />
+              <span class="outer-label">Getting Ready ✨</span>
+            </div>
+
+            <!-- Top-right: Shopping -->
+            <div class="outer-sticker outer-shopping">
+              <img src="/personality/WhatsApp Image 2026-10-04 at 2.35.51 PM (2).jpeg"
+                   alt="Shopping bags sticker"
+                   class="outer-img"
+                   loading="lazy" />
+              <span class="outer-label">Shopping Addict 🛍️</span>
+            </div>
+
+            <!-- Bottom-left: Skincare / beauty -->
+            <div class="outer-sticker outer-skincare">
+              <img src="/personality/WhatsApp Image 2026-10-04 at 2.35.52 PM (1).jpeg"
+                   alt="Skincare products with hyram APPROVED ribbon"
+                   class="outer-img"
+                   loading="lazy" />
+              <span class="outer-label">Skincare ♡</span>
+            </div>
+
+            <!-- Bottom-right: Laptop / coding -->
+            <div class="outer-sticker outer-laptop">
+              <img src="/personality/WhatsApp Image 2026-10-04 at 2.35.52 PM.jpeg"
+                   alt="Pink laptop workspace sticker with coffee mug and flowers"
+                   class="outer-img"
+                   loading="lazy" />
+              <span class="outer-label">Code Girlie 💻</span>
+            </div>
+
+            <!-- Bottom center: Lip balm / makeup -->
+            <div class="outer-sticker outer-lipbalm">
+              <img src="/personality/WhatsApp Image 2026-10-04 at 2.35.53 PM.jpeg"
+                   alt="Fenty Beauty lip products sticker"
+                   class="outer-img"
+                   loading="lazy" />
+              <span class="outer-label">Lip Balm Lover 🧴</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4 — Contact: pink scrapbook closing -->
+      <section class="panel contact-pink">
+        <div class="panel-content">
+          <h2 class="panel-title">Let's Connect ♡</h2>
           <p class="lead">
-            I'm always excited to connect about projects, ideas,
-            or creative coding.
+            You made it to the end — now let's turn an idea into
+            something worth building. ✦
           </p>
+
+          <!-- Decorative stickers (exact supplied images) -->
+          <div class="contact-decorations" aria-hidden="true">
+            <img src="/personality/WhatsApp Image 2026-09-27 at 2.49.29 PM.jpeg"
+                 alt="" class="contact-sticker s1" loading="lazy" />
+            <img src="/personality/WhatsApp Image 2026-10-04 at 2.35.39 PM.jpeg"
+                 alt="" class="contact-sticker s2" loading="lazy" />
+          </div>
+
+          <!-- Subtle glitter sparkles -->
+          <div class="contact-sparkles" aria-hidden="true">
+            <span class="contact-sparkle">✦</span>
+            <span class="contact-sparkle">★</span>
+            <span class="contact-sparkle">✨</span>
+            <span class="contact-sparkle">✦</span>
+            <span class="contact-sparkle">★</span>
+          </div>
+
           <!-- target="_blank" opens links in a new tab.
                rel="noopener noreferrer" prevents the new page
                from accessing this page's window (security best
                practice when linking to external sites). -->
           <div class="links">
-            <a href="https://github.com/vidushitomari545-sh" class="link" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://www.linkedin.com/in/vidushi-tomar-59b1a1322/" class="link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://github.com/vidushitomari545-sh" class="link contact-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/in/vidushi-tomar-59b1a1322/" class="link contact-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           </div>
         </div>
       </section>

@@ -1,17 +1,40 @@
 /* ============================================================
-   Scroll Story — Page Layout & Typography
+   Scroll Story — Pink Theme (Shades of Pink)
+   A modern, elegant creative-tech portfolio built primarily
+   on a dark plum base with cohesive pink hues.
    ============================================================ */
 
 /* ----------------------------------------------------------
-   How the four sections are structured:
-   The page has a <canvas> for the 3D scene (added later) and
-   a <main class="content"> wrapper holding four
-   <section class="panel"> elements — one for each story beat:
-     1. Hero       — "Hi, I'm Vidushi"
-     2. Learning   — "What I'm Learning"
-     3. Projects   — "Things I've Made"
-     4. Contact    — "Say Hello"
+   COLOR PALETTE — All shades of pink / plum:
+
+   --bg-deep    : very dark plum     (page background)
+   --bg-panel   : dark translucent   (glass panels)
+   --text-primary   : white
+   --text-secondary : soft pink      (body text)
+   --text-muted     : dusty rose     (secondary text)
+   --magenta        : strong accent  (buttons, dots, badges)
+   --blush          : soft highlight
+   --border-pink    : translucent pink border
+   --glow-pink      : subtle pink shadow
    ---------------------------------------------------------- */
+
+:root {
+  --bg-deep: #0a0012;
+  --bg-panel: rgba(26, 0, 38, 0.4);
+  --text-primary: #ffffff;
+  --text-secondary: #ecc7d0;
+  --text-muted: #b89aa9;
+  --dusty-rose: #b76e79;
+  --soft-pink: #d4a5b2;
+  --magenta: #d62976;
+  --blush: #f8e0e6;
+  --border-pink: rgba(214, 165, 181, 0.25);
+  --glow-pink: rgba(214, 40, 118, 0.15);
+}
+
+/* ============================================================
+   Base Styles
+   ============================================================ */
 
 * {
   margin: 0;
@@ -25,19 +48,92 @@ html {
 }
 
 body {
+  /* Inter font for clean, modern typography */
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, Helvetica, Arial, sans-serif;
-  background-color: #fdfbf9;
-  color: #2d2d2d;
+
+  /* Dark plum base with subtle pink-tinted orbs */
+  background:
+    radial-gradient(ellipse at 15% 30%, var(--magenta), transparent 55%),
+    radial-gradient(ellipse at 85% 15%, var(--soft-pink), transparent 55%),
+    radial-gradient(ellipse at 50% 85%, var(--dusty-rose), transparent 60%),
+    var(--bg-deep);
+
+  color: var(--text-secondary);
   overflow-x: hidden;
   line-height: 1.6;
 }
 
-/* ----------------------------------------------------------
-   Canvas (3D scene placeholder):
-   Fixed behind all content. z-index: 0 keeps it at the back.
-   Three.js will render onto this in a later step.
+/* ============================================================
+   Decorative Elements (CSS only — no images, no JS)
+
+   These sit behind all content (z-index: 1, canvas is 0,
+   content is 2). They use CSS filters for blur/glow and
+   a simple keyframe for floating motion.
    ---------------------------------------------------------- */
+
+.decorations {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none; /* never blocks clicks on content below */
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Large blurred pink gradient orbs in the background */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+.orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--magenta), transparent 70%);
+  top: 25%;
+  left: 5%;
+}
+
+.orb-2 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, var(--soft-pink), transparent 70%);
+  bottom: 30%;
+  right: 10%;
+}
+
+/* Tiny glowing pink dots that float gently */
+.floating-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--magenta);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--glow-pink);
+  animation: float 20s ease-in-out infinite;
+}
+
+.dot-1 { top: 15%; left: 20%; animation-delay: 0s; }
+.dot-2 { top: 40%; right: 15%; animation-delay: -2s; opacity: 0.5; }
+.dot-3 { bottom: 35%; left: 25%; animation-delay: -4s; opacity: 0.7; }
+.dot-4 { top: 60%; right: 30%; animation-delay: -6s; opacity: 0.4; }
+.dot-5 { bottom: 15%; right: 50%; animation-delay: -8s; opacity: 0.6; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-25px) scale(1.3); }
+}
+
+/* ============================================================
+   Canvas (3D scene)
+   Stays fixed behind content. z-index: 0 is below
+   decorations (z-index: 1) and content (z-index: 2).
+   ============================================================ */
 
 #webgl-canvas {
   position: fixed;
@@ -48,42 +144,252 @@ body {
   z-index: 0;
 }
 
-/* ----------------------------------------------------------
-   Main content and panels:
-   .content sits above the canvas (z-index: 1) so the text
-   is always visible. Each .panel is 100vh tall and uses
-   flexbox to center its content both vertically and
-   horizontally. Panels alternate background shades for
-   subtle visual rhythm while staying cohesive.
-   ---------------------------------------------------------- */
+/* ============================================================
+   Layout: Content & Panels
+
+   How the four sections are structured:
+   The page uses four <section class="panel"> elements
+   inside <main class="content">. Each panel fills the
+   viewport height (min-height: 100vh) and centers its
+   content with flexbox.
+
+   Why ~viewport-height: 100vh makes each section take
+   exactly one full screen. We use min-height (not height)
+   so content can overflow naturally on very short screens.
+
+   Glassmorphism: each panel uses a translucent dark
+   magenta background with backdrop-filter blur, giving
+   a frosted-glass effect that lets the pink orbs
+   behind it gently bleed through.
+   ============================================================ */
 
 .content {
   position: relative;
-  z-index: 1;
+  z-index: 2; /* above canvas (0) and decorations (1) */
   width: 100%;
 }
 
-/* min-height (not height) allows content to overflow
-   naturally if it ever exceeds the viewport on very short
-   screens. */
 .panel {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-pink);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-.panel:nth-child(odd) {
-  background-color: #fdfbf9;
+/* ============================================================
+   Section 1 — Hero
+
+   A premium, soft, feminine hero section with a light pink
+   gradient background and subtle CSS "glitter" (tiny light
+   dots via radial-gradient, no images or JS). Decorative
+   tech/lifestyle stickers float around the hero text like
+   physical scrapbook stickers.
+
+   Palette: very pale blush, soft baby pink, light mauve,
+   very light cream, subtle white highlights.
+   ============================================================ */
+
+.hero {
+  position: relative;
+  /* Hero background: background frame image + dusty-rose scrim + glitter speckles */
+  background:
+    /* glitter speckles — very subtle light speckles */
+    radial-gradient(1.5px circle at 15% 20%, rgba(255, 255, 255, 0.6) 1px, transparent 2px),
+    radial-gradient(1.5px circle at 28% 35%, rgba(255, 255, 255, 0.5) 1px, transparent 2px),
+    radial-gradient(1.5px circle at 42% 15%, rgba(255, 255, 255, 0.6) 1px, transparent 2px),
+    radial-gradient(1.5px circle at 58% 45%, rgba(255, 255, 255, 0.4) 1px, transparent 2px),
+    radial-gradient(1.5px circle at 72% 25%, rgba(255, 255, 255, 0.5) 1px, transparent 2px),
+    radial-gradient(1.5px circle at 85% 55%, rgba(255, 255, 255, 0.4) 1px, transparent 2px),
+    radial-gradient(1.5px circle at 30% 70%, rgba(255, 255, 255, 0.4) 1px, transparent 2px),
+    radial-gradient(1.5px circle at 65% 75%, rgba(255, 255, 255, 0.5) 1px, transparent 2px),
+    radial-gradient(1.5px circle at 88% 35%, rgba(255, 255, 255, 0.4) 1px, transparent 2px),
+    /* richer dusty-rose gradient clouds for a deeper pink wash */
+    radial-gradient(ellipse at 20% 30%, #f0c0d0, transparent 70%),
+    radial-gradient(ellipse at 80% 15%, #eab0c1, transparent 70%),
+    radial-gradient(ellipse at 50% 80%, #ecb8c8, transparent 70%),
+    /* deeper dusty-rose scrim enriches the gingham image */
+    linear-gradient(135deg, rgba(195, 95, 145, 0.22) 0%, rgba(185, 85, 135, 0.18) 100%),
+    /* background frame image */
+    url('/personality/background frame.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Light frosted border instead of the usual dark glass */
+  border: 1px solid rgba(214, 165, 181, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-.panel:nth-child(even) {
-  background-color: #f8f6f3;
+.hero .panel-content {
+  position: relative;
 }
 
-/* Each panel's content is centered with a max-width so
-   long lines don't become hard to read on wide screens. */
+/* Stickers and sparkles sit behind the text; text sits above them */
+.hero-stickers,
+.hero-sparkles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.hero-text {
+  position: relative;
+  z-index: 1;
+}
+
+/* Click Me button — small scrapbook-style CTA near the heading */
+.hero-cta {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.85rem;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  color: #8b2d61;
+  background: rgba(248, 224, 230, 0.9);
+  border: 1px solid rgba(214, 165, 181, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(214, 40, 118, 0.15);
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  transition: all 0.2s ease;
+}
+
+.hero-cta:hover {
+  background: rgba(255, 248, 240, 0.95);
+  box-shadow: 0 4px 12px rgba(214, 40, 118, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Popup message — appears on button click */
+.hero-popup {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px) scale(0.95);
+  padding: 0.75rem 1rem;
+  max-width: 280px;
+  font-size: 0.85rem;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  color: #8b2d61;
+  background: rgba(252, 232, 238, 0.95);
+  border: 1px solid rgba(214, 165, 181, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(214, 40, 118, 0.2);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-popup.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.hero-popup-text {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.hero-popup-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: #b89aa9;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hero-popup-close:hover {
+  color: var(--magenta);
+}
+
+/* Dark text on richer dusty-rose background for readability */
+.hero .display-name {
+  font-family: "DM Serif Display", Georgia, serif;
+  font-weight: 400;
+  color: var(--bg-deep);
+  text-shadow: 0 2px 4px rgba(10, 0, 18, 0.08);
+}
+
+.hero .lead {
+  color: #7a4a5a;
+}
+
+/* ============================================================
+    Hero Decorative Stickers
+
+    Image-based stickers styled like physical scrapbook stickers:
+    medium-large size, soft pink border, rounded corners, slight
+    rotation, and a gentle drop shadow. No cards — they float
+    freely in a loose ring around the centered hero text.
+    ============================================================ */
+
+.hero-sticker {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border: 2px solid rgba(214, 165, 181, 0.6);
+  border-radius: 16px;
+  object-fit: cover;
+  object-position: center;
+  box-shadow: 0 6px 24px rgba(214, 40, 118, 0.25);
+  pointer-events: none;
+}
+
+/* Subtle sparkle / glitter elements */
+.sparkle {
+  position: absolute;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  opacity: 0.5;
+  color: var(--magenta);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+  animation: sparkle-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sparkle-pulse {
+  0%, 100% { opacity: 0.25; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 0.6; transform: scale(1.1) rotate(5deg); }
+}
+
+/* Sticker positions — loose ring around the centered text */
+.hero-sticker.hs-1 { top: 15vh; left: 8vw; transform: rotate(-8deg); }
+.hero-sticker.hs-2 { top: 18vh; right: 6vw; transform: rotate(10deg); }
+.hero-sticker.hs-3 { top: 50vh; right: 4vw; transform: rotate(-5deg); }
+.hero-sticker.hs-4 { bottom: 22vh; right: 8vw; transform: rotate(7deg); }
+.hero-sticker.hs-5 { bottom: 15vh; left: 8vw; transform: rotate(-6deg); }
+.hero-sticker.hs-6 { top: 50vh; left: 4vw; transform: rotate(5deg); }
+
+/* Sparkle positions — scattered for a glittery scrapbook feel */
+.sparkle.sp-1 { top: 12vh; left: 25vw; animation-delay: 0s; }
+.sparkle.sp-2 { top: 10vh; right: 20vw; animation-delay: -0.5s; }
+.sparkle.sp-3 { top: 45vh; left: 3vw; animation-delay: -1s; }
+.sparkle.sp-4 { bottom: 18vh; right: 15vw; animation-delay: -1.5s; }
+.sparkle.sp-5 { bottom: 35vh; left: 28vw; animation-delay: -2s; }
+.sparkle.sp-6 { top: 55vh; right: 30vw; animation-delay: -2.5s; }
+.sparkle.sp-7 { bottom: 8vh; left: 48vw; animation-delay: -3s; }
+.sparkle.sp-8 { top: 30vh; left: 52vw; animation-delay: -0.8s; }
+
 .panel-content {
   max-width: 42rem;
   width: 100%;
@@ -92,31 +398,50 @@ body {
 
 /* ============================================================
    Typography
+
+   Strong hierarchy using clamp() for fluid sizing:
+   headings scale from mobile to desktop without abrupt jumps.
    ============================================================ */
 
 .display-name {
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 700;
-  color: #2d2d2d;
+  color: var(--text-primary);
   margin-bottom: 1rem;
+
+  /* Section 1: subtle pink ambient glow behind the hero name */
+  text-shadow: 0 0 12px var(--glow-pink);
 }
 
 .panel-title {
   font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 600;
-  color: #2d2d2d;
-  margin-bottom: 2rem;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+/* Thin gradient divider line above each section title */
+.panel-title::before {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blush), var(--magenta), var(--blush));
+  margin: 0 auto 1.5rem;
+  border-radius: 1px;
 }
 
 .lead {
   font-size: clamp(0.9rem, 2vw, 1.1rem);
   font-weight: 400;
-  color: #5a5a5a;
+  color: var(--text-secondary);
   line-height: 1.7;
 }
 
 /* ============================================================
-   Lists (skills & projects)
+   Section 2 — Skill List
+   Subtle pink dot accent added before each skill item.
    ============================================================ */
 
 .skill-list,
@@ -127,21 +452,326 @@ body {
   gap: 1rem;
 }
 
-.skill-list li,
-.project-list li {
+.skill-list li {
   font-size: clamp(0.85rem, 2vw, 1rem);
   font-weight: 400;
-  color: #4a4a4a;
+  color: var(--text-secondary);
   line-height: 1.5;
   padding: 0.75rem 1.5rem;
-  background-color: #ffffff;
+  background: var(--bg-panel);
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  border-left: 3px solid #d4a373;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-left: 3px solid var(--soft-pink);
+
+  /* Tiny pink dot accent before each skill */
+  position: relative;
+}
+
+.skill-list li::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--magenta);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--glow-pink);
+  margin-right: 0.75rem;
 }
 
 /* ============================================================
-   Contact links
+   Section 3 — Project Cards
+
+   Dark glass-like cards with pink-tinted backgrounds.
+   Hover adds a soft pink glow and gentle lift.
+   The first card (Spiral Galaxy) gets a slightly stronger
+   glow to make it more prominent.
+   ============================================================ */
+
+.project-list {
+  gap: 1.5rem;
+}
+
+.project-card {
+  background: rgba(26, 0, 38, 0.5);
+  border-radius: 0.75rem;
+  padding: 1.5rem 2rem;
+  box-shadow:
+    0 4px 30px rgba(214, 40, 118, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-pink);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
+  list-style: none;
+  text-align: left;
+}
+
+.project-card:hover {
+  box-shadow:
+    0 0 25px rgba(214, 40, 118, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transform: translateY(-4px);
+}
+
+/* Make the first project (Spiral Galaxy) slightly more prominent */
+.project-card:first-child {
+  box-shadow:
+    0 0 20px rgba(214, 40, 118, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border-color: var(--magenta);
+}
+
+.project-card:first-child:hover {
+  box-shadow:
+    0 0 30px rgba(214, 40, 118, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.project-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.project-title {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.project-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Status badges — each uses a different pink shade:
+   Completed = soft pink / muted     (neutral)
+   In Progress = magenta / warm     (stands out)
+   Team = dusty rose / cooler       (distinct from both) */
+.status-completed {
+  color: var(--text-secondary);
+  background: rgba(214, 165, 181, 0.2);
+  border: 1px solid rgba(214, 165, 181, 0.4);
+}
+
+.status-in-progress {
+  color: var(--blush);
+  background: rgba(214, 40, 118, 0.25);
+  border: 1px solid rgba(214, 40, 118, 0.5);
+}
+
+.status-team {
+  color: var(--text-secondary);
+  background: rgba(183, 110, 121, 0.2);
+  border: 1px solid rgba(183, 110, 121, 0.4);
+}
+
+.project-description {
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.project-achievement {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #c9975a;
+  background: rgba(214, 165, 181, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+}
+
+.project-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.project-card .link {
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.4rem 1rem;
+}
+
+/* ============================================================
+    Section 3b — Non-Technical Vidushi (Personality Constellation)
+
+    A scrapbook-style constellation layout: the central Vidushi
+    sticker sits at the center as the largest element, surrounded
+    by six smaller personality stickers in a loose circle. Elegant
+    SVG curved arrows connect the center to each outer sticker.
+    Light pink scrapbook aesthetic with subtle glitter.
+    ============================================================ */
+
+/* Light pink scrapbook background for this section only */
+.nt-vidushi .panel {
+  background:
+    radial-gradient(ellipse at 20% 30%, #fce0ea 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, #f9e2ee 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 80%, #fce8ee 0%, transparent 70%),
+    linear-gradient(135deg, rgba(214, 165, 181, 0.06) 0%, rgba(248, 224, 230, 0.08) 100%),
+    #fbebf2;
+  border: 1px solid rgba(214, 165, 181, 0.3);
+}
+
+/* Constellation container — 1:1 aspect ratio for SVG alignment */
+.constellation {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  aspect-ratio: 1 / 1;
+  margin: 2rem auto 0;
+}
+
+/* SVG curved arrows — behind all stickers */
+.constellation-arrows {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.constellation-arrow {
+  fill: none;
+  stroke: #b76e79;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 4 2;
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+}
+
+.constellation:hover .constellation-arrow {
+  opacity: 0.6;
+}
+
+/* Subtle glitter sparkles around the center */
+.center-sparkles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.center-sparkle {
+  position: absolute;
+  font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+  opacity: 0.35;
+  color: var(--magenta);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+  animation: sparkle-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.center-sparkle:nth-child(1) { top: -30px; left: -80px; animation-delay: 0s; }
+.center-sparkle:nth-child(2) { top: -20px; right: -60px; animation-delay: -0.5s; }
+.center-sparkle:nth-child(3) { bottom: -10px; left: -70px; animation-delay: -1s; }
+.center-sparkle:nth-child(4) { bottom: -30px; right: -50px; animation-delay: -1.5s; }
+.center-sparkle:nth-child(5) { top: 80px; left: -90px; animation-delay: -2s; }
+.center-sparkle:nth-child(6) { top: 70px; right: -80px; animation-delay: -2.5s; }
+
+/* Central Vidushi sticker — the largest visual element */
+.constellation-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  width: 220px;
+  height: 220px;
+}
+
+.center-sticker {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  /* Soft pink glow + subtle shadow */
+  filter: drop-shadow(0 8px 24px rgba(214, 40, 118, 0.25))
+          drop-shadow(0 0 20px rgba(214, 165, 181, 0.3));
+}
+
+/* Outer sticker containers */
+.outer-sticker {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+
+.outer-sticker:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  z-index: 7;
+}
+
+/* Outer sticker images — noticeably smaller than center */
+.outer-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid rgba(214, 165, 181, 0.6);
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(214, 40, 118, 0.2);
+  transition: box-shadow 0.2s ease;
+  user-select: none;
+}
+
+.outer-sticker:hover .outer-img {
+  box-shadow: 0 6px 20px rgba(214, 40, 118, 0.3);
+  border-color: rgba(214, 40, 118, 0.6);
+}
+
+/* Outer sticker labels — small scrapbook-style */
+.outer-label {
+  margin-top: 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #8b2d61;
+  background: rgba(248, 224, 230, 0.9);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(214, 40, 118, 0.12);
+  border: 1px dashed rgba(214, 165, 181, 0.45);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* SVG coordinate positions (viewBox 0 0 500 500) as percentages */
+.outer-books { top: 14%; left: 50%; }
+.outer-getting-ready { top: 20%; left: 24%; }
+.outer-shopping { top: 20%; left: 76%; }
+.outer-skincare { top: 80%; left: 24%; }
+.outer-laptop { top: 80%; left: 76%; }
+.outer-lipbalm { top: 86%; left: 50%; }
+
+/* ============================================================
+   Section 4 — Contact Buttons
+
+   Dark translucent background with pink border.
+   Hover adds a soft pink glow and gentle lift.
    ============================================================ */
 
 .links {
@@ -154,35 +784,134 @@ body {
 .link {
   font-size: clamp(0.9rem, 2vw, 1rem);
   font-weight: 500;
-  color: #2d2d2d;
+  color: var(--text-primary);
   text-decoration: none;
   padding: 0.6rem 1.5rem;
   border-radius: 0.5rem;
-  border: 2px solid #d4a373;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  border: 1px solid var(--border-pink);
+  background: rgba(26, 0, 38, 0.7);
+  backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(214, 40, 118, 0.08);
 }
 
 .link:hover {
-  background-color: #d4a373;
-  color: #ffffff;
+  background: rgba(214, 40, 118, 0.15);
+  border-color: var(--magenta);
+  color: var(--blush);
+  box-shadow: 0 6px 20px rgba(214, 40, 118, 0.25);
+  transform: translateY(-2px);
 }
 
 /* ============================================================
-   Responsive Design (explained for beginners)
-   -----------------------------------------------------------
-   1. clamp() — font sizes use clamp(min, fluid, max)
-      so text scales smoothly between a minimum and
-      maximum as the viewport resizes. No abrupt jumps.
+    Section 4 — Contact Pink Scrapbook
 
-   2. max-width on .panel-content — keeps every line of text
-      under ~65 characters, the ideal reading length on
-      any screen size.
+    Rich dusty-pink background, glitter sparkles, and two
+    small decorative sticker images as finishing touches.
+    Buttons match the pink scrapbook aesthetic of Section 1.
+    ============================================================ */
 
-   3. Media query (max-width: 640px) — on phones:
-      • Panel padding goes from 4rem/2rem to 6rem/1.5rem
-        (more side space so text never touches edges).
-      • The contact links stack vertically instead of
-        sitting side-by-side, giving them room to breathe.
+.contact-pink .panel {
+  background:
+    radial-gradient(ellipse at 30% 30%, #fce0ea 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 20%, #f9e2ee 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 70%, #fce8ee 0%, transparent 70%),
+    linear-gradient(135deg, rgba(214, 165, 181, 0.08) 0%, rgba(248, 224, 230, 0.12) 100%),
+    #fbebf2;
+  border: 1px solid rgba(214, 165, 181, 0.3);
+}
+
+/* Create positioning context for decorative elements */
+.contact-pink .panel-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Pink scrapbook link buttons */
+.contact-pink .link {
+  background: rgba(248, 224, 230, 0.9);
+  color: #8b2d61;
+  border: 1px solid rgba(214, 165, 181, 0.5);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 14px rgba(214, 40, 118, 0.1);
+}
+
+.contact-pink .link:hover {
+  background: rgba(253, 224, 233, 0.95);
+  border-color: #b76e79;
+  color: #8b2d61;
+  box-shadow: 0 6px 20px rgba(214, 40, 118, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Decorative stickers — sitting behind content */
+.contact-decorations {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.contact-sticker {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  opacity: 0.15;
+  filter: blur(0.5px);
+  user-select: none;
+  z-index: 0;
+}
+
+.contact-sticker.s1 {
+  top: 0.5rem;
+  left: 0.5rem;
+  transform: rotate(-12deg);
+}
+
+.contact-sticker.s2 {
+  bottom: 0.5rem;
+  right: 0.5rem;
+  transform: rotate(18deg);
+}
+
+/* Glitter sparkles */
+.contact-sparkles {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 1rem auto 0;
+  z-index: 1;
+}
+
+.contact-sparkle {
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  opacity: 0.4;
+  color: var(--magenta);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+  animation: sparkle-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.contact-sparkle:nth-child(1) { animation-delay: 0s; }
+.contact-sparkle:nth-child(2) { animation-delay: -0.5s; }
+.contact-sparkle:nth-child(3) { animation-delay: -1s; }
+.contact-sparkle:nth-child(4) { animation-delay: -1.5s; }
+.contact-sparkle:nth-child(5) { animation-delay: -2s; }
+
+/* ============================================================
+    Responsive Design
+
+   How it works on smaller screens:
+   1. clamp() — font sizes scale smoothly between min/max,
+      so text never gets too big or too small on any device.
+   2. max-width on .panel-content — keeps line length under
+      ~65 characters for comfortable reading everywhere.
+   3. Media query (max-width: 640px):
+      • Panel padding increases so text never touches edges.
+      • Contact links and project links stack vertically.
+      • Decorative orbs/dots are dimmed to stay subtle.
    ============================================================ */
 
 @media (max-width: 640px) {
@@ -198,4 +927,93 @@ body {
     flex-direction: column;
     gap: 1rem;
   }
+
+  .project-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Make decorative elements subtler on mobile */
+  .orb {
+    opacity: 0.2;
+  }
+
+  .floating-dot {
+    width: 4px;
+    height: 4px;
+  }
+
+  /* Hero — smaller stickers repositioned on mobile */
+  .hero-sticker {
+    width: 80px;
+    height: 80px;
+  }
+
+  .hero-sticker.hs-1 { top: 14vh; left: 4vw; }
+  .hero-sticker.hs-2 { top: 16vh; right: 4vw; }
+  .hero-sticker.hs-3 { top: 48vh; right: 2vw; }
+  .hero-sticker.hs-4 { bottom: 20vh; right: 6vw; }
+  .hero-sticker.hs-5 { bottom: 14vh; left: 4vw; }
+  .hero-sticker.hs-6 { top: 50vh; left: 2vw; }
+
+  /* Fewer sparkles on mobile for a cleaner look */
+  .sparkle.sp-7,
+  .sparkle.sp-8 {
+    display: none;
+  }
+
+  /* Non-Technical Vidushi constellation — mobile adjustments */
+  .constellation {
+    margin-top: 3rem;
+  }
+
+  .constellation-center {
+    width: 160px;
+    height: 160px;
+  }
+
+  .outer-sticker {
+    transform: translate(-50%, -50%) !important;
+    pointer-events: none;
+  }
+
+  .outer-sticker:hover {
+    transform: translate(-50%, -50%) scale(1.03) !important;
+  }
+
+  .outer-img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .outer-label {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+    margin-top: 0.3rem;
+  }
+
+  /* Reposition stickers for mobile — cleaner vertical flow */
+  .outer-books { top: 12%; left: 50%; }
+  .outer-getting-ready { top: 22%; left: 20%; }
+  .outer-shopping { top: 22%; left: 80%; }
+  .outer-skincare { top: 78%; left: 20%; }
+  .outer-laptop { top: 78%; left: 80%; }
+  .outer-lipbalm { top: 90%; left: 50%; }
+
+   /* Fewer sparkles on mobile for a cleaner look */
+   .center-sparkle:nth-child(5),
+   .center-sparkle:nth-child(6) {
+     display: none;
+   }
+
+   /* Contact section — smaller decorations on mobile */
+   .contact-sticker {
+     width: 45px;
+     height: 45px;
+   }
+
+   .contact-sparkle:nth-child(4),
+   .contact-sparkle:nth-child(5) {
+     display: none;
+   }
 }

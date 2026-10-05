@@ -102,9 +102,10 @@ function init() {
   animate();
   // Hide the 3D object after the hero section on desktop.
 // Mobile behavior stays unchanged because the phone version already looks good.
+
 window.addEventListener("scroll", () => {
   if (window.innerWidth >= 640) {
-    object.visible = window.scrollY < window.innerHeight * 0.85;
+    object.visible = window.scrollY < 40;
   }
 });
 

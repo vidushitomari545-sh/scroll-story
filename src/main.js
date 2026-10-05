@@ -59,28 +59,28 @@ function init() {
 
   // ---- 4. LIGHTING ----
   // Ambient light lights up everything evenly so no side is completely dark.
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
   scene.add(ambientLight);
 
   // Directional light acts like sunlight, creating highlights and soft shadows.
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
   directionalLight.position.set(5, 10, 7);
   scene.add(directionalLight);
 
   // ---- 5. 3D OBJECT ----
   // An icosahedron is a 20-sided shape that looks like a smooth sphere
   // when the detail level is high. We place it on the RIGHT side.
-  const geometry = new THREE.IcosahedronGeometry(1.2, 3);
+  const geometry = new THREE.IcosahedronGeometry(0.7, 3);
   const material = new THREE.MeshStandardMaterial({
     color: 0xd4a373,      // warm terracotta — matches the CSS accent
-    metalness: 0.8,       // 0 = plastic, 1 = mirror (high = glossy)
-    roughness: 0.1,       // 0 = perfectly smooth, 1 = rough (low = glossy)
+    metalness: 0.35,       // 0 = plastic, 1 = mirror (high = glossy)
+    roughness: 0.22,       // 0 = perfectly smooth, 1 = rough (low = glossy)
   });
   const object = new THREE.Mesh(geometry, material);
 
   // Position the object on the right side of the screen.
   // x = 2.5 pushes it toward the right edge, away from the centered text.
-  object.position.set(2.5, 0, 0);
+  object.position.set(4.5, 0, 0);
   scene.add(object);
 
   // ---- 6. ANIMATION LOOP ----
@@ -100,6 +100,13 @@ function init() {
     renderer.render(scene, camera);
   }
   animate();
+  // Hide the 3D object after the hero section on desktop.
+// Mobile behavior stays unchanged because the phone version already looks good.
+window.addEventListener("scroll", () => {
+  if (window.innerWidth >= 640) {
+    object.visible = window.scrollY < window.innerHeight * 0.85;
+  }
+});
 
   // ---- 7. HANDLE WINDOW RESIZING ----
   // When the browser window changes size, update the camera and renderer
